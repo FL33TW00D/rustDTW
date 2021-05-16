@@ -1,16 +1,13 @@
-use rand::random;
-use rand::{distributions::Uniform, Rng, distributions::Standard};
-use rusty_dtw::dtw_connectome;
+use rusty_dtw::*;
+
+// TODO: write function to process a list of connectomes
+//       create data structure to hold the connectome, so that we can implement the display trait
+//       write a configuration object that holds the window and the mode
+//       PyO3 bindings
+
 fn main() {
-    let range = Uniform::from(0..123123);
-    let mut connectome: Vec<Vec<f32>> = vec![];
-    let DIM = 100;
-    for i in 0..DIM {
-        let values: Vec<f32> = rand::thread_rng().sample_iter(Standard).take(DIM).collect();
-        connectome.push(values);
-    }
-    
-    let result = dtw_connectome(&connectome);
-    println!("{:?}", result);
-    println!("Produced dimension: {:?}", result.len());
+    let connectome = construct_random_connectome(100);
+    println!("{:?}", dtw_connectome(&connectome));
 }
+
+

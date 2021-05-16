@@ -1,5 +1,6 @@
+use rand::{distributions::Standard, Rng};
+
 pub fn dtw(s: &Vec<f32>, t: &Vec<f32>, w: &mut i32, debug: &bool) -> f32 {
-    //function that computes the dynamic time warping value for 2 real vectors
     let n = s.len() + 1;
     let m = t.len() + 1;
     let mut dtw = vec![vec![f32::MAX; m]; n];
@@ -37,12 +38,17 @@ pub fn dtw(s: &Vec<f32>, t: &Vec<f32>, w: &mut i32, debug: &bool) -> f32 {
     f32::sqrt(dtw[s.len()][t.len()])
 }
 
-pub fn dtw_connectome(connectome: &Vec<Vec<f32>>) -> Vec<f32>{
+pub fn dtw_connectome(connectome: &Vec<Vec<f32>>) -> Vec<f32> {
     let mut result: Vec<f32> = vec![];
-    for i in 0..connectome.len(){
-        //i+1 includes main diagonal, which is typically 0'd anyway but makes it easier when we want to convert from vector -> matrix 
-        for j in 0..i+1{
-            result.push(dtw(&connectome[0..connectome.len()][i], &connectome[0..connectome.len()][j], &mut 50, &false));
+    for i in 0..connectome.len() {
+        //i+1 includes main diagonal, which is typically 0'd anyway but makes it easier when we want to convert from vector -> matrix
+        for j in 0..i + 1 {
+            result.push(dtw(
+                &connectome[0..connectome.len()][i],
+                &connectome[0..connectome.len()][j],
+                &mut 50,
+                &false,
+            ));
         }
     }
     result
@@ -54,4 +60,13 @@ fn distance(a: &f32, b: &f32, mode: &str) -> Result<f32, String> {
         "euclidean" => Ok((a - b) * (a - b)),
         __ => Err(String::from("Please provide a valid distance metric.")),
     }
+}
+
+pub fn construct_random_connectome(dim: usize) -> Vec<Vec<f32>> {
+    let mut connectome: Vec<Vec<f32>> = vec![];
+    for _ in 0..dim {
+        let values: Vec<f32> = rand::thread_rng().sample_iter(Standard).take(dim).collect();
+        connectome.push(values);
+    }
+    connectome
 }

@@ -1,18 +1,8 @@
 use criterion::{criterion_group, criterion_main, Criterion};
-use rand::{distributions::Standard, distributions::Uniform, Rng}; // 0.8.0
-use rand::random;
-use rusty_dtw::dtw_connectome;
+use rusty_dtw::*;
 
 fn criterion_benchmark(c: &mut Criterion) {
-    let range = Uniform::from(0..123123);
-    let mut connectome: Vec<Vec<f32>> = vec![];
-    let DIM = 20;
-    for i in 0..DIM {
-        let values: Vec<f32> = rand::thread_rng().sample_iter(Standard).take(DIM).collect();
-        connectome.push(values);
-    }
-    
-    
+    let connectome = construct_random_connectome(100);
     c.bench_function("dtw_connectome", |b| b.iter(|| dtw_connectome(&connectome)));
 }
 
