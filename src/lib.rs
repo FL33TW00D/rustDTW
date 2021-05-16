@@ -1,6 +1,8 @@
 use rand::{distributions::Standard, Rng};
+use std::thread;
+use std::sync::{Mutex, Arc};
 
-pub fn dtw(s: &Vec<f32>, t: &Vec<f32>, w: &mut i32, debug: &bool) -> f32 {
+pub fn dtw(s: &Vec<f32>, t: &Vec<f32>, w: &mut i32) -> f32 {
     let n = s.len() + 1;
     let m = t.len() + 1;
     let mut dtw = vec![vec![f32::MAX; m]; n];
@@ -46,11 +48,37 @@ pub fn dtw_connectome(connectome: &Vec<Vec<f32>>) -> Vec<f32> {
             result.push(dtw(
                 &connectome[0..connectome.len()][i],
                 &connectome[0..connectome.len()][j],
-                &mut 50,
-                &false,
+                &mut 50
             ));
         }
     }
+    result
+}
+
+pub fn dtw_connectomes(connectomes: &'static Vec<Vec<Vec<f32>>>, num_threads: u8) -> Vec<Vec<f32>> {
+    // let result: Arc<Mutex<Vec<Vec<f32>>>> = Arc::new(Mutex::new(vec![]));
+    let mut result = vec![];
+    let mut threads = Vec::new();
+
+    let chunk = ((connectomes.len() as f32 / num_threads as f32) as f32).ceil() as usize;
+
+    for lb in (chunk..connectomes.len() + chunk).step_by(chunk as usize){
+        // let safe = Arc::clone(&result);
+        let t = thread::spawn(move || -> Vec<Vec<f32>>{
+            let mut chunk_result = vec![];
+            for idx in lb - chunk..lb{
+                chunk_result.push(dtw_connectome(&connectomes[idx]));
+            }
+            chunk_result
+        });
+        threads.push(t);
+    }
+
+    for t in threads{
+        result.extend(t.join().unwrap());
+    }
+
+    // let x = result.lock().unwrap().to_vec(); x
     result
 }
 

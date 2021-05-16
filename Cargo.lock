@@ -466,6 +466,7 @@ name = "rusty-dtw"
 version = "0.1.0"
 dependencies = [
  "criterion",
+ "num_cpus",
  "rand",
 ]
 
