@@ -1,8 +1,9 @@
 use rusty_dtw::*;
 
-// TODO: write function to process a list of connectomes
+// TODO: 
 //       create data structure to hold the connectome, so that we can implement the display trait
-//       write a configuration object that holds the window, the mode, to vectorize or not, and the number of jobs.
+//       Bring across configuration object from branch
+//       Try rayon threading
 //       PyO3 bindings
 
 fn main() {
