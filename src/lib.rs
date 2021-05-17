@@ -55,19 +55,23 @@ pub fn dtw_connectome(connectome: &Vec<Vec<f32>>) -> Vec<f32> {
     result
 }
 
-pub fn dtw_connectomes(connectomes: &'static Vec<Vec<Vec<f32>>>, num_threads: u8) -> Vec<Vec<f32>> {
-    // let result: Arc<Mutex<Vec<Vec<f32>>>> = Arc::new(Mutex::new(vec![]));
+pub fn dtw_connectomes(connectomes: Vec<Vec<Vec<f32>>>, num_threads: u8) -> Vec<Vec<f32>> {
+    let clen = connectomes.len();
+    let chunk = ((clen as f32 / num_threads as f32) as f32).ceil() as usize;
+
     let mut result = vec![];
     let mut threads = Vec::new();
+    
+    let arc = Arc::new(Mutex::new(connectomes));
 
-    let chunk = ((connectomes.len() as f32 / num_threads as f32) as f32).ceil() as usize;
-
-    for lb in (chunk..connectomes.len() + chunk).step_by(chunk as usize){
-        // let safe = Arc::clone(&result);
+    for lb in (chunk..clen + chunk).step_by(chunk as usize){
+        let clone = Arc::clone(&arc);
         let t = thread::spawn(move || -> Vec<Vec<f32>>{
             let mut chunk_result = vec![];
-            for idx in lb - chunk..lb{
-                chunk_result.push(dtw_connectome(&connectomes[idx]));
+            // println!("CHUNK: {:?}, LB: {:?}", chunk, lb);
+            for idx in lb - chunk..usize::min(lb, clen){
+                // println!("IDX: {:?}", idx);
+                chunk_result.push(dtw_connectome(&clone.lock().unwrap()[idx]));
             }
             chunk_result
         });

@@ -7,11 +7,11 @@ use rusty_dtw::*;
 
 fn main() {
     let mut connectomes: Vec<Vec<Vec<f32>>> = vec![];
-    for _ in 0..5{
+    for _ in 0..10{
         connectomes.push(construct_random_connectome(20));
     }
 
-    let result = dtw_connectomes(&connectomes, 4);
+    let result = dtw_connectomes(connectomes, 8);
 
     for vec in result.iter(){
         println!("{:?}", vec);
