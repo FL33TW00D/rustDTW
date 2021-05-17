@@ -6,17 +6,29 @@ use rusty_dtw::*;
 //       PyO3 bindings
 
 fn main() {
+    let config = Config {
+        mode: String::from("euclidean"),
+        window: 100,
+        n_jobs: 8,
+        vectorize: true,
+    };
+
     let mut connectomes: Vec<Vec<Vec<f32>>> = vec![];
-    for _ in 0..10{
+    for _ in 0..10 {
         connectomes.push(construct_random_connectome(20));
     }
 
-    let result = dtw_connectomes(connectomes, 8);
+    let distance = select_distance(&config.mode);
+    let result = dtw_connectomes(connectomes, config.n_jobs, config.window, distance);
 
-    for vec in result.iter(){
+    for vec in result.iter() {
         println!("{:?}", vec);
     }
-
 }
 
-
+fn select_distance(mode:&str) -> Box<dyn Fn(&f32, &f32) -> f32> {
+    match mode {
+        "manhattan" => Box::new(|a,b| f32::abs(a - b)),
+        "euclidean" => Box::new(|a, b| (a - b) * (a - b))
+    }
+}
