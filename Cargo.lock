@@ -468,6 +468,7 @@ dependencies = [
  "criterion",
  "num_cpus",
  "rand",
+ "rayon",
 ]
 
 [[package]]
