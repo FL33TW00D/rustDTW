@@ -1,5 +1,6 @@
 use rand::{distributions::Standard, Rng};
 use rayon::prelude::*;
+use std::{error::Error, string::ParseError};
 
 pub fn dtw(s: &Vec<f32>, t: &Vec<f32>, w: &i32, distance: fn(&f32, &f32) -> f32) -> f32 {
     let n = s.len() + 1;
@@ -20,29 +21,16 @@ pub fn dtw(s: &Vec<f32>, t: &Vec<f32>, w: &i32, distance: fn(&f32, &f32) -> f32)
                 );
         }
     }
-
-    // if *debug {
-    //     for si in 0..n {
-    //         for ti in 0..m {
-    //             print!(
-    //                 "{:7} ",
-    //                 (if dtw[si][ti] == f32::MAX {
-    //                     String::from("inf")
-    //                 } else {
-    //                     format!("{:.*}", 2, dtw[si][ti])
-    //                 })
-    //             );
-    //         }
-    //         println!("");
-    //     }
-    // }
     f32::sqrt(dtw[s.len()][t.len()])
 }
 
-pub fn dtw_connectome(connectome: &Vec<Vec<f32>>, window: &i32, distance: fn(&f32, &f32) -> f32) -> Vec<f32> {
+pub fn dtw_connectome(
+    connectome: &Vec<Vec<f32>>,
+    window: &i32,
+    distance: fn(&f32, &f32) -> f32,
+) -> Vec<f32> {
     let mut result: Vec<f32> = vec![];
     for i in 0..connectome.len() {
-        //i+1 includes main diagonal, which is typically 0'd anyway but makes it easier when we want to convert from vector -> matrix
         for j in 0..i + 1 {
             result.push(dtw(
                 &connectome[0..connectome.len()][i],
@@ -62,7 +50,7 @@ pub fn dtw_connectomes(
 ) -> Vec<Vec<f32>> {
     connectomes
         .par_iter()
-        .map( |connectome| dtw_connectome(connectome, window, distance))
+        .map(|connectome| dtw_connectome(connectome, window, distance))
         .collect()
 }
 
@@ -81,10 +69,10 @@ pub struct Config {
     pub vectorize: bool,
 }
 
-pub fn select_distance(mode:&str) -> Result<fn(&f32, &f32) -> f32, &str> {
+pub fn select_distance(mode: &str) -> Result<fn(&f32, &f32) -> f32, Box<dyn Error>>{
     match mode {
-        "manhattan" => Ok(|a,b| f32::abs(a - b)),
+        "manhattan" => Ok(|a, b| f32::abs(a - b)),
         "euclidean" => Ok(|a, b| (a - b) * (a - b)),
-        _ => Err("Failed")
+        _ => Err("Please provide a valid distance metric.".into()),
     }
 }

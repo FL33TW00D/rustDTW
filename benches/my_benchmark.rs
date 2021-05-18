@@ -10,7 +10,7 @@ fn criterion_benchmark(c: &mut Criterion) {
 
     let mut connectomes: Vec<Vec<Vec<f32>>> = vec![];
     for _ in 0..100 {
-        connectomes.push(construct_random_connectome(55));
+        connectomes.push(construct_random_connectome(10));
     }
     let distance = select_distance(&config.mode).unwrap();
     c.bench_function("dtw_connectome_list", |b| {

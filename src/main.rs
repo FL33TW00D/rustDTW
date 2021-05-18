@@ -2,20 +2,20 @@ use rusty_dtw::*;
 
 // TODO:
 //       create data structure to hold the connectome, so that we can implement the display trait
-//       Bring across configuration object from branch
-//       Try rayon threading
 //       PyO3 bindings
+//       Remove sqrt from end of function conditionally
+//      Write method to return as a symmetric connectome
 
 fn main() {
     let config = Config {
-        mode: String::from("euclidean"),
-        window: 100,
+        mode: String::from("minkowski"),
+        window: 50,
         vectorize: true,
     };
 
     let mut connectomes: Vec<Vec<Vec<f32>>> = vec![];
-    for _ in 0..10 {
-        connectomes.push(construct_random_connectome(20));
+    for _ in 0..1 {
+        connectomes.push(construct_random_connectome(300));
     }
 
     let distance = select_distance(&config.mode).unwrap();
@@ -25,4 +25,3 @@ fn main() {
         println!("{:?}", vec);
     }
 }
-
