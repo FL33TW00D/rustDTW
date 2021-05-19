@@ -7,10 +7,16 @@ use rusty_dtw::*;
 //      Write method to return as a symmetric connectome
 
 fn main() {
+
+    let distance = Distance {
+        mode: String::from("euclidean"),
+        distance: select_distance(mode).unwrap()
+    };
+    
     let config = Config {
-        mode: String::from("minkowski"),
         window: 50,
         vectorize: true,
+        distance: distance
     };
 
     let mut connectomes: Vec<Vec<Vec<f32>>> = vec![];
@@ -18,8 +24,7 @@ fn main() {
         connectomes.push(construct_random_connectome(300));
     }
 
-    let distance = select_distance(&config.mode).unwrap();
-    let result = dtw_connectomes(connectomes, &config.window, distance);
+    let result = dtw_connectomes(connectomes, &config.window, distance.distance);
 
     for vec in result.iter() {
         println!("{:?}", vec);

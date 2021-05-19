@@ -1,6 +1,6 @@
 use rand::{distributions::Standard, Rng};
 use rayon::prelude::*;
-use std::{error::Error, string::ParseError};
+use std::{error::Error};
 
 pub fn dtw(s: &Vec<f32>, t: &Vec<f32>, w: &i32, distance: fn(&f32, &f32) -> f32) -> f32 {
     let n = s.len() + 1;
@@ -64,9 +64,14 @@ pub fn construct_random_connectome(dim: usize) -> Vec<Vec<f32>> {
 }
 
 pub struct Config {
-    pub mode: String,
     pub window: i32,
     pub vectorize: bool,
+    pub distance: Distance
+}
+
+pub struct Distance {
+    pub mode: String,
+    pub distance: fn(&f32, &f32) -> f32
 }
 
 pub fn select_distance(mode: &str) -> Result<fn(&f32, &f32) -> f32, Box<dyn Error>>{
