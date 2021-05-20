@@ -85,3 +85,16 @@ pub fn select_distance(mode: &str) -> Result<fn(&f32, &f32) -> f32, Box<dyn Erro
         _ => Err("Please provide a valid distance metric.".into()),
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn dtw_test(){
+        let s1 : Vec<f32> = vec![0., 0., 1., 2., 1., 0., 1., 0., 0.];
+        let s2 : Vec<f32> = vec![0., 1., 2., 0., 0., 0., 0., 0., 0.];
+
+        let result = dtw(&s1, &s2, &50, |a, b| (a - b) * (a - b), &String::from("euclidean"));
+        assert_eq!(result, 1.4142135623730951)
+    }
+}

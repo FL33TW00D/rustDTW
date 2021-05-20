@@ -2,7 +2,6 @@ use rusty_dtw::*;
 
 // TODO:
 //       PyO3 bindings
-//       Remove sqrt from end of function conditionally
 //      Write method to return as a symmetric connectome
 
 fn main() {
