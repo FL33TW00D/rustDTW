@@ -1,4 +1,3 @@
-use rand::{distributions::Standard, Rng};
 use std::{error::Error};
 use ndarray::parallel::prelude::*;
 
@@ -60,7 +59,7 @@ pub fn dtw_connectomes(
     distance_mode: &String
 ) -> Vec<Vec<f32>> {
     connectomes.axis_iter(Axis(0))
-        .into_iter()
+        .into_par_iter()
         .map(|connectome| dtw_connectome(connectome, window, distance_fn, distance_mode))
         .collect()
 }

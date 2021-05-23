@@ -15,7 +15,7 @@ fn main() {
         distance_mode
     };
 
-    let connectomes = Array3::random((1, 10, 10), Uniform::new(1., 10.0));
+    let connectomes = Array3::random((1, 10, 10), Uniform::new(1., f32::sqrt(f32::MAX) - 1.0));
     let result = dtw_connectomes(connectomes, &config.window, config.distance_fn, &config.distance_mode);
 
     for vec in result.iter() {
