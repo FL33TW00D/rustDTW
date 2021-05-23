@@ -1,12 +1,15 @@
-use rand::{distributions::Standard, Rng};
-use rayon::prelude::*;
 use std::{error::Error};
+use ndarray::parallel::prelude::*;
 
-pub fn dtw(s: &Vec<f32>, t: &Vec<f32>, w: &i32, distance_fn: fn(&f32, &f32) -> f32, distance_mode: &String) -> f32 {
-    let n = s.len() + 1;
-    let m = t.len() + 1;
-    let mut dtw = vec![vec![f32::MAX; m]; n];
-    dtw[0][0] = 0.;
+use ndarray::prelude::*;
+
+
+pub fn dtw(s: ArrayView1<f32>, t: ArrayView1<f32>, w: &i32, distance_fn: fn(&f32, &f32) -> f32, distance_mode: &String) -> f32 {
+    let m = s.len() + 1;
+    let n = t.len() + 1;
+    let mut dtw = Array::from_elem((m, n), f32::MAX);
+
+    dtw[[0,0]] = 0.;
 
     let max_window = i32::max(*w, i32::abs((n - m) as i32));
     for si in 1..n {
@@ -14,32 +17,32 @@ pub fn dtw(s: &Vec<f32>, t: &Vec<f32>, w: &i32, distance_fn: fn(&f32, &f32) -> f
         let upper_bound = i32::min(m as i32, si as i32 + max_window);
         for ti in lower_bound as usize..upper_bound as usize {
             let cost = distance_fn(&s[si - 1], &t[ti - 1]);
-            dtw[si][ti] = cost
+            dtw[[si, ti]] = cost
                 + f32::min(
-                    f32::min(dtw[si - 1][ti], dtw[si][ti - 1]),
-                    dtw[si - 1][ti - 1],
+                    f32::min(dtw[[si-1, ti]], dtw[[si, ti-1]]),
+                    dtw[[si-1, ti-1]],
                 );
         }
     }
     if distance_mode.eq("euclidean"){
-        f32::sqrt(dtw[s.len()][t.len()])
+        f32::sqrt(dtw[[n-1, m-1]])
     }else{
-        dtw[s.len()][t.len()]
+        dtw[[n-1, m-1]]
     }
 }
 
 pub fn dtw_connectome(
-    connectome: &Vec<Vec<f32>>,
+    connectome: ArrayView2<f32>,
     window: &i32,
     distance_fn: fn(&f32, &f32) -> f32,
     distance_mode: &String
 ) -> Vec<f32> {
     let mut result: Vec<f32> = vec![];
-    for i in 0..connectome.len() {
+    for i in 0..connectome.shape()[0]{ 
         for j in 0..i + 1 {
             result.push(dtw(
-                &connectome[0..connectome.len()][i],
-                &connectome[0..connectome.len()][j],
+                connectome.slice(s![.., i]),
+                connectome.slice(s![.., j]),                                
                 window,
                 distance_fn,
                 distance_mode,
@@ -50,24 +53,15 @@ pub fn dtw_connectome(
 }
 
 pub fn dtw_connectomes(
-    connectomes: Vec<Vec<Vec<f32>>>,
+    connectomes: Array3<f32>,
     window: &i32,
     distance_fn: fn(&f32, &f32) -> f32,
     distance_mode: &String
 ) -> Vec<Vec<f32>> {
-    connectomes
-        .par_iter()
+    connectomes.axis_iter(Axis(0))
+        .into_par_iter()
         .map(|connectome| dtw_connectome(connectome, window, distance_fn, distance_mode))
         .collect()
-}
-
-pub fn construct_random_connectome(dim: usize) -> Vec<Vec<f32>> {
-    let mut connectome: Vec<Vec<f32>> = vec![];
-    for _ in 0..dim {
-        let values: Vec<f32> = rand::thread_rng().sample_iter(Standard).take(dim).collect();
-        connectome.push(values);
-    }
-    connectome
 }
 
 pub struct Config {
@@ -91,10 +85,10 @@ mod tests {
     use super::*;
     #[test]
     fn dtw_test(){
-        let s1 : Vec<f32> = vec![0., 0., 1., 2., 1., 0., 1., 0., 0.];
-        let s2 : Vec<f32> = vec![0., 1., 2., 0., 0., 0., 0., 0., 0.];
+        let s1:Array1<f32>  = array![0., 0., 1., 2., 1., 0., 1., 0., 0.];
+        let s2:Array1<f32>  = array![0., 1., 2., 0., 0., 0., 0., 0., 0.];
 
-        let result = dtw(&s1, &s2, &50, |a, b| (a - b) * (a - b), &String::from("euclidean"));
+        let result = dtw(s1.view(), s2.view(), &50, |a, b| (a - b) * (a - b), &String::from("euclidean"));
         assert_eq!(result, 1.4142135623730951)
     }
 }
