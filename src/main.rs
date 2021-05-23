@@ -1,5 +1,7 @@
 use rusty_dtw::*;
-
+use ndarray::prelude::*;
+use ndarray_rand::RandomExt;
+use ndarray_rand::rand_distr::Uniform;
 // TODO:
 //       PyO3 bindings
 //      Write method to return as a symmetric connectome
@@ -13,11 +15,7 @@ fn main() {
         distance_mode
     };
 
-    let mut connectomes: Vec<Vec<Vec<f32>>> = vec![];
-    for _ in 0..1 {
-        connectomes.push(construct_random_connectome(10));
-    }
-
+    let connectomes = Array3::random((1, 10, 10), Uniform::new(1., 10.0));
     let result = dtw_connectomes(connectomes, &config.window, config.distance_fn, &config.distance_mode);
 
     for vec in result.iter() {
