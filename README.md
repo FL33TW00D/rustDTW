@@ -1,17 +1,17 @@
-<img src="./images/logo.sample.png" alt="Logo of the project" align="right">
+<h1 align="center">
+  <img src="https://miro.medium.com/max/907/1*Bzubc5uGFXd_-Sj7W_QFjg.png" width="224px"/><br/>
+  RustDTW
+</h1>
+<p align="center">Python extension backed by a multi-threaded Rust implementation of Dynamic Time Warping (DTW).</p>
 
-# RustyDTW &middot; [![Build Status](https://img.shields.io/travis/npm/npm/latest.svg?style=flat-square)](https://travis-ci.org/npm/npm) [![npm](https://img.shields.io/npm/v/npm.svg?style=flat-square)](https://www.npmjs.com/package/npm) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://github.com/your/your-project/blob/master/LICENSE)
-> Python extension backed by a multi-threaded Rust implementation of Dynamic Time Warping (DTW).
+<p align="center"><a href="https://github.com/create-go-app/cli/releases" target="_blank"><img src="https://img.shields.io/badge/version-v2.2.0-blue?style=for-the-badge&logo=none" alt="cli version" /></a>&nbsp;<a href="https://pkg.go.dev/github.com/create-go-app/cli/v2?tab=doc" target="_blank"><img src="https://img.shields.io/badge/Go-1.16+-00ADD8?style=for-the-badge&logo=go" alt="go version" /></a>&nbsp;<a href="https://gocover.io/github.com/create-go-app/cli/pkg/cgapp" target="_blank"><img src="https://img.shields.io/badge/Go_Cover-89%25-success?style=for-the-badge&logo=none" alt="go cover" /></a>&nbsp;<a href="https://goreportcard.com/report/github.com/create-go-app/cli" target="_blank"><img src="https://img.shields.io/badge/Go_report-A+-success?style=for-the-badge&logo=none" alt="go report" /></a>&nbsp;<img src="https://img.shields.io/badge/license-apache_2.0-red?style=for-the-badge&logo=none" alt="license" /></p>
 
-A brief description of your project, what it is used for.
-This python extension is designed for rapid computation of dynamic time warping values, originally written for the analysis of timeseries similarity of fMRI signals. Features many helper methods for easy computation of a DTW connectome.
+## ⚡️ Quick start
 
-## Installing / Getting started
-
-To install rustyDTW, simply:
+To install rustDTW, simply:
 
 ```shell
-pip install rustyDTW
+pip install rustDTW
 ```
 
 Here you should say what actually happens when you execute the code above.
@@ -99,6 +99,7 @@ If the api is external, link to api documentation. If not describe your api incl
 Explaining what database (and version) has been used. Provide download links.
 Documents your database design and schemas, relations etc... 
 
-## Licensing
+## ⚠️ License
 
-State what the license is and how to find the text version of the license.
+`rustDTW` is free and open-source software licensed under the [Apache 2.0 License](https://github.com/FLE33TW00D/rustyDTW/blob/master/LICENSE).
+
