@@ -1,0 +1,15 @@
+[build-system]
+build-backend = "maturin"
+
+[tool.poetry]
+name = "rust-dtw"
+version = "0.1.0"
+description = "A rust implementation of dynamic time warping."
+authors = ["Christopher Fleetwood"]
+
+[tool.poetry.dependencies]
+numpy = ">=1.18"
+python = ">=3.6"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.1"

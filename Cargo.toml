@@ -6,15 +6,23 @@ edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[lib]
+name = "rust_dtw"
+crate-type = ["cdylib"]
+
 [dependencies]
 rand = "0.8.3"
 num_cpus = "1.13.0"
-ndarray = { version = "0.15.0", features = ["rayon"] }
+ndarray = { version = "0.14.0", features = ["rayon"] }
 ndarray-rand = "0.14.0"
+numpy = "0.13"
+
+[dependencies.pyo3]
+version = "0.13.2"
+features = ["extension-module"]
 
 [dev-dependencies]
 criterion = "0.3.4"
-
 
 [[bench]]
 name = "my_benchmark"
