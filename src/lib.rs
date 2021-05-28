@@ -8,11 +8,11 @@ use pyo3::{IntoPy, prelude::{pymodule, PyModule, PyResult, Python}};
 
 //TODO:
 //Implement a new version of dtw_connectome that takes the vectorize argument and conditionally returns an Array1 or an Array2
-//Implement versions of all the methods that return ndarray objects so they can be easily transformed back into numpy arrays for Python users pleasure
 //Determine if its possible to use TQDM accurately, since the process will take a while with large matricies
 //Add informative error messages, error catching
 //Write comprehensive tests covering corner cases like negative numbers etc.
 //Work out if any other distance metrics are valid for DTW (minkowski? chebyshev?)
+//Write normalizing functions as per Reginas paper
 
 #[pymodule]
 fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
