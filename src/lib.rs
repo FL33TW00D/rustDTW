@@ -135,7 +135,7 @@ fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
             let (i, j) = ind2tril(k as f32, dim as f32);
             full[[i as usize, j as usize]] = vec[k];
         }
-        full + full.t()
+        full.clone() + full.t()
     }
 
     pub fn select_distance(mode: &str) -> Result<fn(&f64, &f64) -> f64, Box<dyn Error>>{
