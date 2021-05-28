@@ -103,11 +103,11 @@ fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
         window: &i32,
         vectorize: bool,
         distance_fn: fn(&f64, &f64) -> f64,
-        distance_mode: &String
-    ) -> ArrayD<f64>{
+        distance_mode: &String){
+    // ) -> ArrayD<f64>{
 
         //This is not the fastest way and is not recommended by the docs
-        let result: Vec<Vec<f64>> = connectomes.axis_chunks_iter(Axis(0), connectomes.shape()[1])
+        let result: Vec<Vec<f64>> = connectomes.axis_iter(Axis(0))
         .into_par_iter()
         .map(|connectome| dtw_connectome(connectome, window, distance_fn, distance_mode)).collect();
 
@@ -120,17 +120,22 @@ fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
         
     }
 
-    pub fn vec_to_sym_mat(vec: Array1<f64>, dim: usize){
+    pub fn ind2tril(ind: f32, dim:f32) -> (f32, f32){
+        let rvLinear = (dim*(dim-1.0))/2.0-ind;
+        let k = f32::floor( (f32::sqrt(1.0+8.0*rvLinear)-1.0)/2.0 );
+        let j = rvLinear - k*(k+1.0)/2.0;
+        (dim - j, dim - (k + 1.0))
+    }
+
+
+    pub fn vec_to_sym_mat(vec: Array1<f64>, dim: usize) -> Array2<f64>{
         //TODO implement function which converts lower triangular matrix to sym
         let mut full: Array2<f64> = Array2::zeros((dim, dim));
-        
-        for i  in 0..full.shape()[0]{
-            for j in 0..i + 1{
-                full[[i,j]] = vec[((i - 1) * i / 2) + j];
-            }
+        for k in 0..vec.len(){
+            let (i, j) = ind2tril(k as f32, dim as f32);
+            full[[i as usize, j as usize]] = vec[k];
         }
-
-        full = full + full.t()
+        full + full.t()
     }
 
     pub fn select_distance(mode: &str) -> Result<fn(&f64, &f64) -> f64, Box<dyn Error>>{
