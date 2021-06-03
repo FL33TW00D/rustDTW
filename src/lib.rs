@@ -2,7 +2,7 @@ use std::{error::Error};
 use ndarray::parallel::prelude::*;
 use ndarray::prelude::*;
 
-use numpy::{IntoPyArray, PyArray1, PyArray3, PyArrayDyn, PyReadonlyArray1, PyReadonlyArray2, PyReadonlyArray3};
+use numpy::{IntoPyArray, PyArray1, PyArrayDyn, PyReadonlyArray1, PyReadonlyArray2, PyReadonlyArray3};
 use pyo3::prelude::{pymodule, PyModule, PyResult, Python};
 
 
@@ -11,7 +11,6 @@ use pyo3::prelude::{pymodule, PyModule, PyResult, Python};
 //Determine if its possible to use TQDM accurately, since the process will take a while with large matricies
 //Add informative error messages, error catching
 //Write comprehensive tests covering corner cases like negative numbers etc.
-//Work out if any other distance metrics are valid for DTW (minkowski? chebyshev?)
 //Write normalizing functions as per Reginas paper
 
 #[pymodule]
@@ -58,11 +57,9 @@ fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
         py: Python<'py>,
         connectome: PyReadonlyArray2<'_, f64>,
         window: i32,
-        vectorize: bool,
         distance_mode: String
     )-> PyResult<&'py PyArray1<f64>>{
-        let result = dtw_connectome(connectome.as_array().view(), &window,select_distance(&distance_mode).unwrap(), &distance_mode);
-        Ok(result.into_pyarray(py))
+        Ok(dtw_connectome(connectome.as_array().view(), &window,select_distance(&distance_mode).unwrap(), &distance_mode).into_pyarray())
     }
 
     pub fn dtw_connectome(
@@ -132,7 +129,6 @@ fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
 
 
     pub fn vec_to_sym_mat(vec: Array1<f64>, dim: usize) -> Array2<f64>{
-        //TODO implement function which converts lower triangular matrix to sym
         let mut full: Array2<f64> = Array2::zeros((dim, dim));
         for k in 0..vec.len(){
             let (i, j) = ind2tril(k as f32, dim as f32);
@@ -151,8 +147,6 @@ fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
 
     Ok(())
 }
-
-
 
 
 
