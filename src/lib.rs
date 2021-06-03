@@ -2,8 +2,8 @@ use std::{error::Error};
 use ndarray::parallel::prelude::*;
 use ndarray::prelude::*;
 
-use numpy::{IntoPyArray, PyArray1,PyArray2, PyArray3, PyArrayDyn, PyReadonlyArray1, PyReadonlyArray2, PyReadonlyArray3, PyReadonlyArrayDyn, c64};
-use pyo3::{IntoPy, prelude::{pymodule, PyModule, PyResult, Python}};
+use numpy::{IntoPyArray, PyArray1, PyArray3, PyArrayDyn, PyReadonlyArray1, PyReadonlyArray2, PyReadonlyArray3};
+use pyo3::prelude::{pymodule, PyModule, PyResult, Python};
 
 
 //TODO:
@@ -86,37 +86,40 @@ fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
         result
     }
 
-    // #[pyfn(m, "dtw_connectomes")]
-    // fn dtw_connnectomes_py<'py>(
-    //     py: Python<'py>,
-    //     connectomes: PyArray3<f64>,
-    //     window: i32,
-    //     vectorize: bool,
-    //     distance_mode: String
-    // )-> PyResult<&'py PyArray2<f64>>{
-    //     let result = dtw_connectomes(connectomes.as_array().to_owned(), &window, select_distance(&distance_mode).unwrap(), &distance_mode);
-    //     Ok(result.into_pyarray(py))
-    // }
+    #[pyfn(m, "dtw_connectomes")]
+    fn dtw_connnectomes_py<'py>(
+        py: Python<'py>,
+        connectomes: PyReadonlyArray3<'_, f64>,
+        window: i32,
+        vectorize: bool,
+        distance_mode: String
+    )-> &'py PyArrayDyn<f64> {
+        dtw_connectomes(connectomes.as_array().to_owned(), &window, vectorize, select_distance(&distance_mode).unwrap(), &distance_mode).into_pyarray(py)
+    }
     
     pub fn dtw_connectomes(
         connectomes: Array3<f64>,
         window: &i32,
         vectorize: bool,
         distance_fn: fn(&f64, &f64) -> f64,
-        distance_mode: &String){
-    // ) -> ArrayD<f64>{
+        distance_mode: &String
+    ) -> ArrayD<f64>{
 
-        //This is not the fastest way and is not recommended by the docs
-        let result: Vec<Vec<f64>> = connectomes.axis_iter(Axis(0))
+        //Vec<Vec<f64>> is a vector of 1d vectors that contain the lower triangular portion of the connectome
+        let result: Vec<f64> = connectomes.axis_iter(Axis(0))
         .into_par_iter()
-        .map(|connectome| dtw_connectome(connectome, window, distance_fn, distance_mode)).collect();
+        .map(|connectome| dtw_connectome(connectome, window, distance_fn, distance_mode)).flatten().collect();
 
-        // if vectorize{
-        //     Array2::from_shape_vec((dim, dim), result).unwrap()
-        // }else{
-        //     //convert to each vector (lower triangular) into symmetric matrix
-                //Fill Array2 from zeros and then fill lower triangular and + A.T
-        // }
+        if vectorize {
+            //TODO: VALIDATE THAT THIS ACTUALLY WORKS SINCE THE ABOVE IS FLATTENED.
+            Array2::from_shape_vec((connectomes.shape()[1], connectomes.shape()[1]), result).unwrap().into_dyn()
+        }else{
+            //convert to each vector (lower triangular) into symmetric matrix
+            // Fill Array2 from zeros and then fill lower triangular and + A.T          
+            //TODO: FIX BELOW BECAUSE ITS DEAD DEAD WRONG  
+            Array3::from_shape_vec((connectomes.shape()[0], connectomes.shape()[1], connectomes.shape()[1]), result).unwrap().into_dyn()
+            
+        }
         
     }
 
