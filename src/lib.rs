@@ -180,7 +180,7 @@ fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
             full[[i_l as usize, j_l as usize]] = vec[k];
         }
         //cloning is slow, will improve in future
-        full += &full.clone().t();  
+        full += &full.clone().t();
         full
     }
 
