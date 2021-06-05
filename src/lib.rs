@@ -59,7 +59,7 @@ fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
         window: i32,
         distance_mode: String
     )-> PyResult<&'py PyArray1<f64>>{
-        Ok(dtw_connectome(connectome.as_array().view(), &window,select_distance(&distance_mode).unwrap(), &distance_mode).into_pyarray())
+        Ok(dtw_connectome(connectome.as_array().view(), &window,select_distance(&distance_mode).unwrap(), &distance_mode).into_pyarray(py))
     }
 
     pub fn dtw_connectome(
@@ -101,8 +101,6 @@ fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
         distance_fn: fn(&f64, &f64) -> f64,
         distance_mode: &String
     ) -> ArrayD<f64>{
-
-        //Vec<Vec<f64>> is a vector of 1d vectors that contain the lower triangular portion of the connectome
         let result: Vec<f64> = connectomes.axis_iter(Axis(0))
         .into_par_iter()
         .map(|connectome| dtw_connectome(connectome, window, distance_fn, distance_mode)).flatten().collect();
@@ -114,24 +112,29 @@ fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
             //convert to each vector (lower triangular) into symmetric matrix
             // Fill Array2 from zeros and then fill lower triangular and + A.T          
             //TODO: FIX BELOW BECAUSE ITS DEAD DEAD WRONG  
+
+            //Now I can extract each slice from the vector, based on the input dim length,
+            //convert that into a 2d matrix, or just straight away fill the 3d matrix, probably the best idea
+            
+
+            //Now I have the method that converts a vector from the
             Array3::from_shape_vec((connectomes.shape()[0], connectomes.shape()[1], connectomes.shape()[1]), result).unwrap().into_dyn()
             
         }
         
     }
 
-    pub fn ind2tril(ind: f32, dim:f32) -> (f32, f32){
-        let rvLinear = (dim*(dim-1.0))/2.0-ind;
-        let k = f32::floor( (f32::sqrt(1.0+8.0*rvLinear)-1.0)/2.0 );
-        let j = rvLinear - k*(k+1.0)/2.0;
-        (dim - j, dim - (k + 1.0))
+    pub fn ind2tril(ind: f32) -> (f32, f32){
+        let i = f32::floor((f32::sqrt(1.0+8.0*ind)-1.0)/2.0);
+        let j = ind - i*(i+1.0)/2.0;
+        (i, j)
     }
 
 
     pub fn vec_to_sym_mat(vec: Array1<f64>, dim: usize) -> Array2<f64>{
         let mut full: Array2<f64> = Array2::zeros((dim, dim));
         for k in 0..vec.len(){
-            let (i, j) = ind2tril(k as f32, dim as f32);
+            let (i, j) = ind2tril(k as f32);
             full[[i as usize, j as usize]] = vec[k];
         }
         full.clone() + full.t()
