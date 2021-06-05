@@ -82,5 +82,5 @@ How well does the Rust implementation stack up against some other Python version
 
 ## ⚠️ License
 
-`rustDTW` is free and open-source software licensed under the [MIT License](https://github.com/FLE33TW00D/rustyDTW/blob/master/LICENSE).
+`rustDTW` is free and open-source software licensed under the [MIT License](https://github.com/FLE33TW00D/rustDTW/blob/master/LICENSE).
 
