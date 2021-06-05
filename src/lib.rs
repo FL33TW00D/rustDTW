@@ -115,11 +115,15 @@ fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
 
             //Now I can extract each slice from the vector, based on the input dim length,
             //convert that into a 2d matrix, or just straight away fill the 3d matrix, probably the best idea
-            
 
-            //Now I have the method that converts a vector from the
-            Array3::from_shape_vec((connectomes.shape()[0], connectomes.shape()[1], connectomes.shape()[1]), result).unwrap().into_dyn()
+            let mut sym: Array3<f64> = Array3::zeros((connectomes.shape()[0], connectomes.shape()[1], connectomes.shape()[1]));
             
+            //iterate over the subject axis
+            for (idx , mut segment) in sym.axis_iter_mut(Axis(0)).enumerate() {
+                segment *= &vec_to_sym_mat(&result[idx..idx+1].to_vec(), connectomes.shape()[1]);
+            }
+            
+            sym.into_dyn()
         }
         
     }
@@ -131,7 +135,7 @@ fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
     }
 
 
-    pub fn vec_to_sym_mat(vec: Array1<f64>, dim: usize) -> Array2<f64>{
+    pub fn vec_to_sym_mat(vec: &Vec<f64>, dim: usize) -> Array2<f64>{
         let mut full: Array2<f64> = Array2::zeros((dim, dim));
         for k in 0..vec.len(){
             let (i, j) = ind2tril(k as f32);

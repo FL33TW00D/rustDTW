@@ -4,7 +4,7 @@ build-backend = "maturin"
 [tool.poetry]
 name = "rust-dtw"
 version = "0.1.0"
-description = "A rust implementation of dynamic time warping."
+description = "A rust implementation of dynamic time warping with python bindings!"
 authors = ["Christopher Fleetwood"]
 
 [tool.poetry.dependencies]
