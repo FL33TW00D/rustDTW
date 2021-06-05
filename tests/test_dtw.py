@@ -39,17 +39,22 @@ def test_dtw_connectome():
         [0., 2.82842712, 0., 5.65685425, 2.82842712, 0.]))
 
 
-def test_dtw_connectome_fmri():
-    """
-    Function that uses data from nilearns datatsets module datasets.fetch_development_fmri(n_subjects=1)
-    Masked as per the example using the MSDL atlas, should result in 39 x 39 connectome
-    """
-    timeseries = np.load(os.getcwd() + "/tests/resources/fmri_ex.npy")
-    ground_truth = np.load(os.getcwd() + "/tests/resources/fmri_ground.npy")
-    #Bumped up window due to length of timeseries (169 time points)
-    result = rust_dtw.dtw_connectome(
-        connectome=timeseries, window=100, distance_mode="euclidean")
-    np.testing.assert_array_almost_equal(result, ground_truth)
+# def test_dtw_connectome_fmri():
+#     """
+#     Function that uses real data from nilearns datatsets module datasets.fetch_development_fmri(n_subjects=1)
+#     Masked as per the example using the MSDL atlas, should result in 39 x 39 connectome
+#     """
+#     timeseries = np.load(os.getcwd() + "/tests/resources/fmri_ex.npy")
+#     ground_truth = np.load(os.getcwd() + "/tests/resources/fmri_ground.npy")
+#     #Bumped up window due to length of timeseries (169 time points)
+#     result = rust_dtw.dtw_connectome(
+#         connectome=timeseries, window=100, distance_mode="euclidean")
+#     np.testing.assert_array_almost_equal(result, ground_truth)
 
-# def test_dtw_connectomes():
+def test_dtw_connectomes():
+    timeseries = np.random.rand(3,3,3)
+    result = rust_dtw.dtw_connectomes(connectomes=timeseries, window=100, vectorize=False, distance_mode="euclidean")
 
+def test_dtw_connectomes_vectorize():
+    timeseries = np.random.rand(3,3,3)
+    result = rust_dtw.dtw_connectomes(connectomes=timeseries, window=100, vectorize=True, distance_mode="euclidean")
