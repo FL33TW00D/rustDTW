@@ -4,9 +4,10 @@
 </h1>
 <p align="center">Python extension backed by a multi-threaded Rust implementation of Dynamic Time Warping (DTW).</p>
 
-<p align="center"><a href="https://github.com" target="_blank"><img src="https://img.shields.io/badge/version-v0.1.0-green?style=for-the-badge&logo=none" alt="cli version" />
+<p align="center"><a href="https://github.com" target="_blank"><img src="https://img.shields.io/badge/version-v0.1.2-green?style=for-the-badge&logo=none" alt="cli version" />
+</p>
 
-## ⚡️ Quick start
+## ⚡️ Quick Installation
 
 To install rustDTW, simply:
 
@@ -14,8 +15,17 @@ To install rustDTW, simply:
 pip install rustdtw
 ```
 
-Here you should say what actually happens when you execute the code above.
-
+## Example Usage
+  
+rustDTW was designed for usage with timeseries data from functional brain regions. However any data represented as a numpy matrix can be provided.
+```python
+import numpy as np
+import rust_dtw
+  
+rust_dtw.dtw(s=np.array([0., 1., 2.]), t=np.array([3., 4., 5.]), window=50, distance_mode="euclidean")
+>>> 5.0990195
+```
+  
 ## Developing
 
 ### Built With
@@ -23,10 +33,6 @@ Here you should say what actually happens when you execute the code above.
 - Maturin
 - rust-numpy
 - Rayon
-- and more!
-
-### Prerequisites
-What is needed to set up the dev environment. For instance, global dependencies or any other tools. include download links.
 
 
 ### Setting up Dev
@@ -56,29 +62,15 @@ make install
 Here again you should state what actually happens when the code above gets
 executed.
 
-### Deploying / Publishing
-give instructions on how to build and release a new version
-In case there's some step you have to take that publishes this project to a
-server, this is the right time to state it.
-
-```shell
-packagemanager deploy your-project -s server.com -u username -p password
-```
-
-And again you'd need to tell what the previous code actually does.
-
-
-
 ## Tests
 
 All tests are implemented using pytest.
 ```shell
-Give an example
+poetry run pytest
 ```
 
-## Performance
-How well does the Rust implementation stack up against some other Python versions.
-
+## 📈 Performance
+How well does the Rust implementation stack up against some other Python/C versions.
 
 ## ⚠️ License
 
