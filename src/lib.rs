@@ -62,6 +62,15 @@ fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
         Ok(dtw_connectome(connectome.as_array().view(), &window,select_distance(&distance_mode).unwrap(), &distance_mode).into_pyarray(py))
     }
 
+    /// Dynamic time warping on a 2D matrix representing an fMRI timeseries
+    /// 
+    /// # Arguments
+    ///
+    /// * `connectome` - An (m x n) matrix (number of time points x number of ROIs)
+    /// * `window` - warping window
+    /// * `distance_fn` - a function object that computes the distance between 2 points
+    /// * `distance_mode` - string repr of above function
+
     pub fn dtw_connectome(
         connectome: ArrayView2<f64>,
         window: &i32,
@@ -69,7 +78,7 @@ fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
         distance_mode: &String
     ) -> Vec<f64> {
         let mut result: Vec<f64> = vec![];
-        for i in 0..connectome.shape()[0]{ 
+        for i in 0..connectome.shape()[1]{ 
             for j in 0..i + 1 {
                 result.push(dtw(
                     connectome.slice(s![.., i]),
@@ -106,19 +115,9 @@ fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
         .map(|connectome| dtw_connectome(connectome, window, distance_fn, distance_mode)).flatten().collect();
 
         if vectorize {
-            //TODO: VALIDATE THAT THIS ACTUALLY WORKS SINCE THE ABOVE IS FLATTENED.
             Array2::from_shape_vec((connectomes.shape()[1], connectomes.shape()[1]), result).unwrap().into_dyn()
         }else{
-            //convert to each vector (lower triangular) into symmetric matrix
-            // Fill Array2 from zeros and then fill lower triangular and + A.T          
-            //TODO: FIX BELOW BECAUSE ITS DEAD DEAD WRONG  
-
-            //Now I can extract each slice from the vector, based on the input dim length,
-            //convert that into a 2d matrix, or just straight away fill the 3d matrix, probably the best idea
-
             let mut sym: Array3<f64> = Array3::zeros((connectomes.shape()[0], connectomes.shape()[1], connectomes.shape()[1]));
-            
-            //iterate over the subject axis
             for (idx , mut segment) in sym.axis_iter_mut(Axis(0)).enumerate() {
                 segment *= &vec_to_sym_mat(&result[idx..idx+1].to_vec(), connectomes.shape()[1]);
             }
