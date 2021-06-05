@@ -52,9 +52,15 @@ def test_dtw_connectome_fmri():
     np.testing.assert_array_almost_equal(result, ground_truth)
 
 def test_dtw_connectomes():
+    """
+    TODO: use a real subject list and real matricies
+    """
     timeseries = np.random.rand(3,3,3)
     result = rust_dtw.dtw_connectomes(connectomes=timeseries, window=100, vectorize=False, distance_mode="euclidean")
 
 def test_dtw_connectomes_vectorize():
+    """
+    TODO: use a real subject list and real matricies
+    """
     timeseries = np.random.rand(3,3,3)
     result = rust_dtw.dtw_connectomes(connectomes=timeseries, window=100, vectorize=True, distance_mode="euclidean")

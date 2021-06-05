@@ -30,6 +30,16 @@ fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
         )
     }
 
+    /// Dynamic time warping distance between 2 1D matricies
+    ///
+    /// # Arguments
+    ///
+    /// * `s` - A 1D array
+    /// * `t` - A 1D array
+    /// * `window` - warping window
+    /// * `distance_fn` - a function object that computes the distance between 2 points
+    /// * `distance_mode` - string repr of above function
+
     pub fn dtw(
         s: ArrayView1<f64>,
         t: ArrayView1<f64>,
@@ -166,12 +176,6 @@ fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
         let j = ind - i * (i + 1.0) / 2.0;
         (i, j)
     }
-
-    // pub fn ind2triu(ind: f32, dim: f32) -> (f32, f32) {
-    //     let ii = dim * (dim + 1.) / 2. - 1. - ind;
-    //     let k = f32::floor((f32::sqrt(1.0 + 8.0 * ii) - 1.0) / 2.0);
-    //     (ind - 1. - k, ind - ii + (k + 1.) * (k + 2.) / 2.)
-    // }
 
     pub fn vec_to_sym_mat(vec: &Vec<f64>, dim: usize) -> Array2<f64> {
         let mut full: Array2<f64> = Array2::zeros((dim, dim));
