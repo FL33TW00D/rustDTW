@@ -55,12 +55,12 @@ def test_dtw_connectomes():
     """
     TODO: use a real subject list and real matricies
     """
-    timeseries = np.random.rand(3,3,3)
+    timeseries = np.random.rand(10,20,20)
     result = rust_dtw.dtw_connectomes(connectomes=timeseries, window=100, vectorize=False, distance_mode="euclidean")
 
 def test_dtw_connectomes_vectorize():
     """
     TODO: use a real subject list and real matricies
     """
-    timeseries = np.random.rand(3,3,3)
+    timeseries = np.random.rand(10,20,20)
     result = rust_dtw.dtw_connectomes(connectomes=timeseries, window=100, vectorize=True, distance_mode="euclidean")

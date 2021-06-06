@@ -1,6 +1,7 @@
 use ndarray::parallel::prelude::*;
 use ndarray::prelude::*;
 use std::error::Error;
+use indicatif::ParallelProgressIterator;
 
 use numpy::{
     IntoPyArray, PyArray1, PyArrayDyn, PyReadonlyArray1, PyReadonlyArray2, PyReadonlyArray3,
@@ -151,6 +152,7 @@ fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
         let result: Vec<f64> = connectomes
             .axis_iter(Axis(0))
             .into_par_iter()
+            .progress_count(n_subjects as u64)
             .map(|connectome| dtw_connectome(connectome, window, distance_fn, distance_mode))
             .flatten()
             .collect();
@@ -186,6 +188,10 @@ fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
         //cloning is slow, will improve in future
         full += &full.clone().t();
         full
+    }
+
+    pub fn normalize() -> () {
+
     }
 
     pub fn select_distance(mode: &str) -> Result<fn(&f64, &f64) -> f64, Box<dyn Error>> {
