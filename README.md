@@ -23,7 +23,12 @@ rustDTW was designed for usage with timeseries data from functional brain region
 import numpy as np
 import rust_dtw
   
-rust_dtw.dtw(s=np.array([0., 1., 2.]), t=np.array([3., 4., 5.]), window=50, distance_mode="euclidean")
+rust_dtw.dtw(
+  s=np.array([0., 1., 2.]), 
+  t=np.array([3., 4., 5.]), 
+  window=50, 
+  distance_mode="euclidean"
+  )
 >>> 5.0990195
 ```
   

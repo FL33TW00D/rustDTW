@@ -1,12 +1,17 @@
+use indicatif::ParallelProgressIterator;
 use ndarray::parallel::prelude::*;
 use ndarray::prelude::*;
 use std::error::Error;
-use indicatif::ParallelProgressIterator;
 
 use numpy::{
     IntoPyArray, PyArray1, PyArrayDyn, PyReadonlyArray1, PyReadonlyArray2, PyReadonlyArray3,
 };
 use pyo3::prelude::{pymodule, PyModule, PyResult, Python};
+
+//TODO:
+//1. Work out how to cargo doc to documentation
+//2. Define less neuro specific method namings
+//3. Finalize tests
 
 #[pymodule]
 fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
