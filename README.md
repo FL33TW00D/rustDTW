@@ -3,9 +3,10 @@
   RustDTW
 </h1>
 <p align="center">Python extension backed by a multi-threaded Rust implementation of Dynamic Time Warping (DTW).</p>
+<div align="center">
+<img src="https://img.shields.io/pypi/v/rust-dtw?style=flat-square"/><br/>  
+</div>
 
-<p align="center"><a href="https://github.com" target="_blank"><img src="https://img.shields.io/badge/version-v0.1.2-green?style=for-the-badge&logo=none" alt="cli version" />
-</p>
 
 ## ⚡️ Quick Installation
 
@@ -41,26 +42,10 @@ Here's a brief intro about what a developer must do in order to start developing
 the project further:
 
 ```shell
-git clone https://github.com/your/your-project.git
-cd your-project/
-packagemanager install
+git clone https://github.com/FL33TW00D/rustDTW.git
+cd rust-dtw/
+./build.sh
 ```
-
-And state what happens step-by-step. If there is any virtual environment, local server or database feeder needed, explain here.
-
-### Building
-
-If your project needs some additional steps for the developer to build the
-project after some code changes, state them here. for example:
-
-```shell
-./configure
-make
-make install
-```
-
-Here again you should state what actually happens when the code above gets
-executed.
 
 ## Tests
 
