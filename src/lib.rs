@@ -8,11 +8,6 @@ use numpy::{
 };
 use pyo3::prelude::{pymodule, PyModule, PyResult, Python};
 
-//TODO:
-//Determine if its possible to use TQDM accurately, since the process will take a while with large matricies
-//Add informative error messages, error catching
-//Write normalizing functions as per Reginas paper
-
 #[pymodule]
 fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
     #[pyfn(m, "dtw")]
@@ -188,10 +183,6 @@ fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
         //cloning is slow, will improve in future
         full += &full.clone().t();
         full
-    }
-
-    pub fn normalize() -> () {
-
     }
 
     pub fn select_distance(mode: &str) -> Result<fn(&f64, &f64) -> f64, Box<dyn Error>> {
