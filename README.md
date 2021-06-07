@@ -13,7 +13,7 @@
 To install rustDTW, simply:
 
 ```shell
-pip install rustdtw
+pip install rust-dtw
 ```
 
 ## Example Usage
