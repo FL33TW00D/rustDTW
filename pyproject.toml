@@ -17,4 +17,4 @@ python = ">=3.6"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.1"
-maturin = "~0.10.6"
+maturin = "==0.10.6"
