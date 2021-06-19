@@ -56,11 +56,12 @@ jobs:
       - name: Install package deps
         run: | 
           poetry install
-      - name: Install latest nightly
+ 
+      - name: Install rust
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: nightly
-          override: true
+          toolchain: stable
+          profile: minimal
 
       - name: Build Python package
         run: poetry run maturin develop --release
@@ -70,8 +71,6 @@ jobs:
 
       - name: Benchmark
         run: poetry run pytest benchmarks --compare
-  
-
 
 
   python-publish:
