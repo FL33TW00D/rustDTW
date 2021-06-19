@@ -60,7 +60,10 @@ poetry run pytest
 ```
 
 ## 📈 Performance
-How well does the Rust implementation stack up against some other Python/C versions.
+<div align="center">
+<img src="https://raw.githubusercontent.com/FL33TW00D/rustDTW/master/examples/time.png" width=60%/><br/>  
+</div>
+The above shows the performance of the rustdtw implementation vs the DTAIDistance OpenMP Python version (more benchmarks vs C implementation coming soon).
 
 ## ⚠️ License
 
