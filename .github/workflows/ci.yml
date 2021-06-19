@@ -79,8 +79,12 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
         exclude:
         - os: windows-latest
-          python-version: [3.6, 3.7, 3.8]
-
+          python-version: 3.6
+        - os: windows-latest
+          python-version: 3.7
+        - os: windows-latest
+          python-version: 3.8
+        
     steps:
       - uses: actions/checkout@v1
 
@@ -133,12 +137,6 @@ jobs:
           MATURIN_PASSWORD: ${{ secrets.PYPI }}
         run: poetry run maturin publish --username __token__ -i python${{ matrix.python-version }}
 
-      - name: PyPi publish nix
-        if: matrix.os != 'windows-latest'
-        env:
-          MATURIN_PASSWORD: ${{ secrets.PYPI }}
-        run: poetry run maturin publish --username __token__ -i python${{ matrix.python-version }}
-      
       #windows autodiscovers 4 python versions
       - name: PyPi publish windows
         if: matrix.os == 'windows-latest'
