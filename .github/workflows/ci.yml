@@ -69,10 +69,6 @@ jobs:
       - name: pytest
         run: poetry run pytest tests
 
-      - name: Benchmark
-        run: poetry run pytest benchmarks --compare
-
-
   python-publish:
     needs: build
     runs-on: ${{ matrix.os }}
@@ -118,7 +114,6 @@ jobs:
       - name: Install wheels
         if:  matrix.os != 'windows-latest'
         run: pip install target/wheels/rust_dtw*.whl
-
 
         #Remove this in favour of an up to date action, this is no longer
         #maintained
