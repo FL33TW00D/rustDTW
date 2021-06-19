@@ -1,6 +1,6 @@
 [package]
 name = "rust-dtw"
-version = "0.1.9"
+version = "0.1.10"
 authors = ["Christopher Fleetwood"]
 edition = "2018"
 description = "A rust implementation of dynamic time warping with python bindings!"
