@@ -1,7 +1,8 @@
-use indicatif::ParallelProgressIterator;
 use ndarray::parallel::prelude::*;
 use ndarray::prelude::*;
 use std::error::Error;
+
+use indicatif::{ParallelProgressIterator, ProgressBar, ProgressDrawTarget};
 
 use numpy::{
     IntoPyArray, PyArray1, PyArrayDyn, PyReadonlyArray1, PyReadonlyArray2, PyReadonlyArray3,
@@ -149,10 +150,13 @@ fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
         let (n_subjects, _n_samples, n_features) = connectomes.dim();
         let vec_len = n_features * (n_features + 1) / 2;
 
+        let pb = ProgressBar::new(n_subjects as u64);
+        pb.set_draw_target(ProgressDrawTarget::stdout());
+
         let result: Vec<f64> = connectomes
             .axis_iter(Axis(0))
             .into_par_iter()
-            .progress_count(n_subjects as u64)
+            .progress_with(pb)
             .map(|connectome| dtw_connectome(connectome, window, distance_fn, distance_mode))
             .flatten()
             .collect();
