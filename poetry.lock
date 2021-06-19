@@ -30,7 +30,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
 name = "importlib-metadata"
-version = "4.0.1"
+version = "4.5.0"
 description = "Read metadata from Python packages"
 category = "dev"
 optional = false
@@ -51,6 +51,17 @@ description = "iniconfig: brain-dead simple config-ini parsing"
 category = "dev"
 optional = false
 python-versions = "*"
+
+[[package]]
+name = "maturin"
+version = "0.10.6"
+description = "Build and publish crates with pyo3, rust-cpython and cffi bindings as well as rust binaries as python packages"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+toml = ">=0.10.2,<0.11.0"
 
 [[package]]
 name = "numpy"
@@ -154,7 +165,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.6"
-content-hash = "83547a5e762b65c813eca020324e3c5af1acba15f2c19cd0440408626194bbdd"
+content-hash = "28403ad63ef46258f70b803ce1d69233bd1191cd511ecb182571d8c777f9456e"
 
 [metadata.files]
 atomicwrites = [
@@ -170,12 +181,25 @@ colorama = [
     {file = "colorama-0.4.4.tar.gz", hash = "sha256:5941b2b48a20143d2267e95b1c2a7603ce057ee39fd88e7329b0c292aa16869b"},
 ]
 importlib-metadata = [
-    {file = "importlib_metadata-4.0.1-py3-none-any.whl", hash = "sha256:d7eb1dea6d6a6086f8be21784cc9e3bcfa55872b52309bc5fad53a8ea444465d"},
-    {file = "importlib_metadata-4.0.1.tar.gz", hash = "sha256:8c501196e49fb9df5df43833bdb1e4328f64847763ec8a50703148b73784d581"},
+    {file = "importlib_metadata-4.5.0-py3-none-any.whl", hash = "sha256:833b26fb89d5de469b24a390e9df088d4e52e4ba33b01dc5e0e4f41b81a16c00"},
+    {file = "importlib_metadata-4.5.0.tar.gz", hash = "sha256:b142cc1dd1342f31ff04bb7d022492b09920cb64fed867cd3ea6f80fe3ebd139"},
 ]
 iniconfig = [
     {file = "iniconfig-1.1.1-py2.py3-none-any.whl", hash = "sha256:011e24c64b7f47f6ebd835bb12a743f2fbe9a26d4cecaa7f53bc4f35ee9da8b3"},
     {file = "iniconfig-1.1.1.tar.gz", hash = "sha256:bc3af051d7d14b2ee5ef9969666def0cd1a000e121eaea580d4a313df4b37f32"},
+]
+maturin = [
+    {file = "maturin-0.10.6-py3-none-macosx_10_7_x86_64.whl", hash = "sha256:4177a223727a0ad57bc3f69ca4c3bc04bb3cc4da787cc59a8e25808c85685c67"},
+    {file = "maturin-0.10.6-py3-none-macosx_10_9_x86_64.macosx_11_0_arm64.macosx_10_9_universal2.whl", hash = "sha256:0e81496f70a4805e6ea7dda7b0425246c111ccb119a2e22c64abeff131f4dd21"},
+    {file = "maturin-0.10.6-py3-none-manylinux_2_12_i686.manylinux2010_i686.whl", hash = "sha256:a04589da42f62b1d515f35c81274a56fe0d29216894525e8a37fd1e3c69d87b1"},
+    {file = "maturin-0.10.6-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:b58e9e2ba5a3f651d8885c41370a00bb1d3e4d7313cbb63354077153be7650f4"},
+    {file = "maturin-0.10.6-py3-none-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:3b5d5429bc05a816824420d99973f0cab39d8e274f6c3647bfd9afd95a030304"},
+    {file = "maturin-0.10.6-py3-none-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:4eb4481b6c7d6cac043b969d2eb993c982523e91bb2709f0b09e231cf4846731"},
+    {file = "maturin-0.10.6-py3-none-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:d63f2a15f0b8db4e70d9a59766ca240b2c2ee2146ed5e4385a6118d941d68b25"},
+    {file = "maturin-0.10.6-py3-none-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:532625f312185b06ec196fdb0fc79efafc0e98768153d226fb9417c0ca85e410"},
+    {file = "maturin-0.10.6-py3-none-win32.whl", hash = "sha256:53ef64a147f8a5241a3e932f2db22b5ae7dc5892dae994da319446c5db89dc94"},
+    {file = "maturin-0.10.6-py3-none-win_amd64.whl", hash = "sha256:fa7e1cea2a768257a33aeb556fdec5fc36011bfe82d96730117433c635629dd8"},
+    {file = "maturin-0.10.6.tar.gz", hash = "sha256:bd39f7e08eb9908d4fe1cd9b3c953fad5b1fb4fec9c82d14c2973a65751e1899"},
 ]
 numpy = [
     {file = "numpy-1.19.5-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:cc6bd4fd593cb261332568485e20a0712883cf631f6f5e8e86a52caa8b2b50ff"},
