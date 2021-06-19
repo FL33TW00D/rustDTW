@@ -1,5 +1,4 @@
 <h1 align="center">
-  <img src="https://miro.medium.com/max/907/1*Bzubc5uGFXd_-Sj7W_QFjg.png" width="200px"/><br/>
   RustDTW
 </h1>
 <p align="center">Python extension backed by a multi-threaded Rust implementation of Dynamic Time Warping (DTW).</p>
@@ -31,6 +30,7 @@ rust_dtw.dtw(
   )
 >>> 5.0990195
 ```
+For more examples please see `examples/`
   
 ## Developing
 
