@@ -92,7 +92,7 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-		  profile: minimal
+          profile: minimal
           override: true
 
       - name: Install dependencies
@@ -119,8 +119,9 @@ jobs:
         if:  matrix.os != 'windows-latest'
         run: pip install target/wheels/rust_dtw*.whl
 
-		#Remove this in favour of an up to date action, this is no longer
-		#maintained
+
+        #Remove this in favour of an up to date action, this is no longer
+        #maintained
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
