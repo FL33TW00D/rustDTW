@@ -3,7 +3,11 @@ build-backend = "maturin"
 
 [tool.poetry]
 name = "rust-dtw"
+<<<<<<< Updated upstream
 version = "0.1.2"
+=======
+version = "0.1.8"
+>>>>>>> Stashed changes
 description = "A rust implementation of dynamic time warping with python bindings!"
 license = "MIT"
 readme = "README.md"
