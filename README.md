@@ -6,9 +6,6 @@
 <img src="https://img.shields.io/pypi/v/rust-dtw?style=flat-square"/><br/>  
 </div>
 
-## ❓ Why rustDTW?
-**rustDTW** is a fast and user friendly implementation of Dynamic Time Warping. In constrast to most popularly used DTW libraries, it requires no C compilation (with frustrating build errors) with little performance loss. It can be installed on all operating systems and supports Python3.6 and above.
-
 ## ⚡️ Quick Install
 To install rustDTW, simply:
 
@@ -16,8 +13,8 @@ To install rustDTW, simply:
 pip install rust-dtw
 ```
 
-## ❓ What is Dynamic Time Warping?
-In time series analysis, dynamic time warping (DTW) is one of the algorithms for measuring similarity between two temporal sequences, which may vary in speed. [1](https://en.wikipedia.org/wiki/Dynamic_time_warping). This has applications in speech recognition, time series classification and neuroscience.
+## ❓ What is Dynamic Time Warping
+In time series analysis, dynamic time warping (DTW) is one of the algorithms for measuring similarity between two temporal sequences, which may vary in speed [1](https://en.wikipedia.org/wiki/Dynamic_time_warping). This has applications in speech recognition, time series classification and neuroscience.
 
 ## Example Usage
   
