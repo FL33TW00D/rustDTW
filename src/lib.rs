@@ -1,17 +1,35 @@
 use indicatif::ParallelProgressIterator;
 use ndarray::parallel::prelude::*;
 use ndarray::prelude::*;
+use pyo3::PyAny;
+use pyo3::exceptions::PyValueError;
 use std::error::Error;
 
 use numpy::{
     IntoPyArray, PyArray1, PyArrayDyn, PyReadonlyArray1, PyReadonlyArray2, PyReadonlyArray3,
 };
 use pyo3::prelude::{pymodule, PyModule, PyResult, Python};
+use pyo3::conversion::FromPyObject;
+
 
 //TODO:
 //1. Work out how to cargo doc to documentation
-//2. Define less neuro specific method namings
-//3. Finalize tests
+//2. Define less neuro specific method wrappers
+
+pub enum DistanceMode {
+    Euclidean,
+    Manhattan,
+}
+
+impl FromPyObject<'_> for DistanceMode {
+    fn extract(obj: &PyAny) -> PyResult<Self> {
+        match obj.extract().unwrap() {
+            "euclidean" => Ok(DistanceMode::Euclidean),
+            "manhattan" => Ok(DistanceMode::Manhattan),
+            _ => Err(PyValueError::new_err("Please provide a valid distance metric: [\"euclidean\", \"manhattan\"]")),
+        }
+    }
+}
 
 #[pymodule]
 fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
@@ -20,7 +38,7 @@ fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
         s: PyReadonlyArray1<'_, f64>,
         t: PyReadonlyArray1<'_, f64>,
         window: i32,
-        distance_mode: String,
+        distance_mode: DistanceMode,
     ) -> f64 {
         dtw(
             s.as_array().view(),
@@ -46,7 +64,7 @@ fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
         t: ArrayView1<f64>,
         window: &i32,
         distance_fn: fn(&f64, &f64) -> f64,
-        distance_mode: &String,
+        distance_mode: &DistanceMode,
     ) -> f64 {
         let m = s.len() + 1;
         let n = t.len() + 1;
@@ -67,10 +85,10 @@ fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
                     );
             }
         }
-        if distance_mode.eq("euclidean") {
-            f64::sqrt(dtw[[n - 1, m - 1]])
-        } else {
-            dtw[[n - 1, m - 1]]
+
+        match distance_mode {
+            DistanceMode::Euclidean => f64::sqrt(dtw[[n - 1, m - 1]]),
+            DistanceMode::Manhattan => dtw[[n - 1, m - 1]],
         }
     }
 
@@ -79,7 +97,7 @@ fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
         py: Python<'py>,
         connectome: PyReadonlyArray2<'_, f64>,
         window: i32,
-        distance_mode: String,
+        distance_mode: DistanceMode,
     ) -> PyResult<&'py PyArray1<f64>> {
         Ok(dtw_connectome(
             connectome.as_array().view(),
@@ -103,7 +121,7 @@ fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
         connectome: ArrayView2<f64>,
         window: &i32,
         distance_fn: fn(&f64, &f64) -> f64,
-        distance_mode: &String,
+        distance_mode: &DistanceMode,
     ) -> Vec<f64> {
         let mut result: Vec<f64> = vec![];
         for i in 0..connectome.shape()[1] {
@@ -126,7 +144,7 @@ fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
         connectomes: PyReadonlyArray3<'_, f64>,
         window: i32,
         vectorize: bool,
-        distance_mode: String,
+        distance_mode: DistanceMode,
     ) -> &'py PyArrayDyn<f64> {
         dtw_connectomes(
             connectomes.as_array().to_owned(),
@@ -143,9 +161,8 @@ fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
         window: &i32,
         vectorize: bool,
         distance_fn: fn(&f64, &f64) -> f64,
-        distance_mode: &String,
+        distance_mode: &DistanceMode,
     ) -> ArrayD<f64> {
-        //Connectomes is a 3D array (n_subjects x n_samples x n_features)
         let (n_subjects, _n_samples, n_features) = connectomes.dim();
         let vec_len = n_features * (n_features + 1) / 2;
 
@@ -181,20 +198,19 @@ fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
 
     pub fn vec_to_sym_mat(vec: &Vec<f64>, dim: usize) -> Array2<f64> {
         let mut full: Array2<f64> = Array2::zeros((dim, dim));
-        for k in 0..vec.len() {
+        for (k, entry) in vec.iter().enumerate() {
             let (i_l, j_l) = ind2tril(k as f32);
-            full[[i_l as usize, j_l as usize]] = vec[k];
+            full[[i_l as usize, j_l as usize]] = *entry;
         }
         //cloning is slow, will improve in future
         full += &full.clone().t();
         full
     }
 
-    pub fn select_distance(mode: &str) -> Result<fn(&f64, &f64) -> f64, Box<dyn Error>> {
+    pub fn select_distance(mode: &DistanceMode) -> Result<fn(&f64, &f64) -> f64, Box<dyn Error>> {
         match mode {
-            "manhattan" => Ok(|a, b| f64::abs(a - b)),
-            "euclidean" => Ok(|a, b| (a - b) * (a - b)),
-            _ => Err("Please provide a valid distance metric.".into()),
+            DistanceMode::Manhattan => Ok(|a, b| f64::abs(a - b)),
+            DistanceMode::Euclidean => Ok(|a, b| (a - b) * (a - b)),
         }
     }
 

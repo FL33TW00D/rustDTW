@@ -1,5 +1,7 @@
 import numpy as np
+import numpy.testing as npt
 import os
+import pytest
 import rust_dtw
 
 def test_dtw_euclid():
@@ -12,7 +14,7 @@ def test_dtw_euclid():
         window=50,
         distance_mode="euclidean"
     )
-    assert result == 5.0990195135927845
+    npt.assert_equal(result, 5.0990195135927845)
 
 
 def test_dtw_manhattan():
@@ -25,7 +27,7 @@ def test_dtw_manhattan():
         window=50,
         distance_mode="manhattan"
     )
-    assert result == 2.0
+    npt.assert_equal(result, 2.0)
 
 
 def test_dtw_connectome():
@@ -35,7 +37,7 @@ def test_dtw_connectome():
     timeseries = np.array([[0., 2., 4.], [1., 3., 5.]])
     result = rust_dtw.dtw_connectome(
         connectome=timeseries, window=50, distance_mode="euclidean")
-    np.testing.assert_array_almost_equal(result, np.array(
+    npt.assert_array_almost_equal(result, np.array(
         [0., 2.82842712, 0., 5.65685425, 2.82842712, 0.]))
 
 
@@ -49,7 +51,7 @@ def test_dtw_connectome_fmri():
     #Bumped up window due to length of timeseries (169 time points)
     result = rust_dtw.dtw_connectome(
         connectome=timeseries, window=100, distance_mode="euclidean")
-    np.testing.assert_array_almost_equal(result, ground_truth)
+    npt.assert_array_almost_equal(result, ground_truth)
 
 def test_dtw_connectomes():
     """
@@ -64,3 +66,15 @@ def test_dtw_connectomes_vectorize():
     """
     timeseries = np.random.rand(10,20,20)
     result = rust_dtw.dtw_connectomes(connectomes=timeseries, window=100, vectorize=True, distance_mode="euclidean")
+
+def test_valid_distance_metric():
+    timeseries = np.random.rand(10,20,20)
+    with npt.assert_raises(ValueError):
+        result = rust_dtw.dtw_connectomes(connectomes=timeseries, window=100,
+                vectorize=True, distance_mode="INVALID")
+
+
+
+
+
+

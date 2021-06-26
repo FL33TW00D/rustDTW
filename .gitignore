@@ -1,2 +1,3 @@
 /target
 /examples/nilearn_cache/*
+__pycache__/
