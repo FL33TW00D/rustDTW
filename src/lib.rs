@@ -1,16 +1,15 @@
 use indicatif::ParallelProgressIterator;
 use ndarray::parallel::prelude::*;
 use ndarray::prelude::*;
-use pyo3::PyAny;
 use pyo3::exceptions::PyValueError;
+use pyo3::PyAny;
 use std::error::Error;
 
 use numpy::{
     IntoPyArray, PyArray1, PyArrayDyn, PyReadonlyArray1, PyReadonlyArray2, PyReadonlyArray3,
 };
-use pyo3::prelude::{pymodule, PyModule, PyResult, Python};
 use pyo3::conversion::FromPyObject;
-
+use pyo3::prelude::{pymodule, PyModule, PyResult, Python};
 
 //TODO:
 //1. Work out how to cargo doc to documentation
@@ -26,7 +25,9 @@ impl FromPyObject<'_> for DistanceMode {
         match obj.extract().unwrap() {
             "euclidean" => Ok(DistanceMode::Euclidean),
             "manhattan" => Ok(DistanceMode::Manhattan),
-            _ => Err(PyValueError::new_err("Please provide a valid distance metric: [\"euclidean\", \"manhattan\"]")),
+            _ => Err(PyValueError::new_err(
+                "Please provide a valid distance metric: [\"euclidean\", \"manhattan\"]",
+            )),
         }
     }
 }
@@ -94,6 +95,22 @@ fn rust_dtw(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
 
     #[pyfn(m, "dtw_connectome")]
     fn dtw_connnectome_py<'py>(
+        py: Python<'py>,
+        connectome: PyReadonlyArray2<'_, f64>,
+        window: i32,
+        distance_mode: DistanceMode,
+    ) -> PyResult<&'py PyArray1<f64>> {
+        Ok(dtw_connectome(
+            connectome.as_array().view(),
+            &window,
+            select_distance(&distance_mode).unwrap(),
+            &distance_mode,
+        )
+        .into_pyarray(py))
+    }
+
+    #[pyfn(m, "dtw_matrix")]
+    fn wrapped_dtw_connectome_py<'py>(
         py: Python<'py>,
         connectome: PyReadonlyArray2<'_, f64>,
         window: i32,
