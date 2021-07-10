@@ -31,7 +31,7 @@ rust_dtw.dtw(
   )
 >>> 5.0990195
 ```
-For more examples please see `examples/`
+For more examples please see `examples/` or explore the [wiki](https://github.com/FL33TW00D/rustDTW/wiki).
   
 ## Developing
 
