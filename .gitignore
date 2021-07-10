@@ -1,3 +1,4 @@
 /target
-/examples/nilearn_cache/*
+nilearn_cache
+nilearn_data
 __pycache__/
