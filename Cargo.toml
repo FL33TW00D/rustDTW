@@ -28,9 +28,3 @@ indicatif = { version = "0.16.2", features = ["rayon"] }
 version = "0.13.2"
 features = ["extension-module"]
 
-[dev-dependencies]
-criterion = "0.3.4"
-
-[[bench]]
-name = "my_benchmark"
-harness = false
