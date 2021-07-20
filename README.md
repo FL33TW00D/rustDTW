@@ -61,7 +61,7 @@ poetry run pytest
 <div align="center">
 <img src="https://raw.githubusercontent.com/FL33TW00D/rustDTW/master/examples/speed/time.png" width=60%/><br/>  
 </div>
-The above shows the performance of the rustdtw implementation vs the DTAIDistance OpenMP Python version (more benchmarks vs C implementation coming soon).
+The above shows the performance of the rustdtw implementation vs the DTAIDistance OpenMP Python version, showing a ~10x speed improvement.
 
 ## ⚠️ License
 
